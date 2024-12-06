@@ -1,0 +1,42 @@
+[project]
+description = "DBT & Athena Sandbox"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.dependencies]
+dbt-core = ">=1.8.8,<1.9"
+dbt-athena-community = ">=1.8.4,<1.9"
+pulumi = ">=3.0.0,<4.0.0"
+pulumi-aws = ">=6.0.0,<7.0.0"
+python = ">=3.12,<3.13"
+
+[tool.ruff]
+src = ["src"]
+
+[tool.ruff.lint]
+ignore = [
+  "C901", # too complex
+]
+select = [
+  "E", # pycodestyle errors
+  "W", # pycodestyle warnings
+  "F", # pyflakes
+  "I", # isort
+  "C", # flake8-comprehensions
+  "B", # flake8-bugbear
+]
+
+[tool.mypy]
+python_version = "3.12"
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_return_any = true

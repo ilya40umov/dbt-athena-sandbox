@@ -1,0 +1,4 @@
+{"id": 1, "name": "John", "is_admin": true}
+{"id": 2, "name": "Bill", "is_admin": false}
+{"id": 3, "name": "Jane", "is_admin": false}
+{"id": 4, "name": "Jill", "is_admin": true}

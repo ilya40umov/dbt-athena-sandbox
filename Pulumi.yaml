@@ -1,0 +1,7 @@
+name: dbt-athena-sandbox 
+description: DBT & Athena Sandbox 
+main: infra/__main__.py
+runtime:
+  name: python
+  options:
+    toolchain: poetry
