@@ -13,19 +13,27 @@ help:
 
 # Usage: make diff
 diff: .env
-	source .env && pulumi preview -s main --diff
+	source .env && pulumi preview --cwd infra-as-code/ -s main --diff
 
 # Usage: make refresh
 refresh: .env
-	source .env && pulumi refresh -s main
+	source .env && pulumi refresh --cwd infra-as-code/ -s main
 
 # Usage: make up
 up: .env
-	source .env && pulumi up -s main
+	source .env && pulumi up --cwd infra-as-code/ -s main
 
 # Usage: make down
 down: .env
-	source .env && pulumi destroy -s main
+	source .env && pulumi destroy --cwd infra-as-code/ -s main
+
+.PHONY: debug run
+
+debug:
+	source .env && poetry run dbt debug --connection
+
+run:
+	source .env && poetry run dbt run
 
 .PHONY: pre-commit
 

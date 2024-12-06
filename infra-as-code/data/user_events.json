@@ -1,0 +1,7 @@
+{"id": 1, "user_id": 2, "type": "Login", "time": "2024-12-06 07:00:00.000"}
+{"id": 2, "user_id": 1, "type": "Login", "time": "2024-12-06 08:00:00.000"}
+{"id": 3, "user_id": 1, "type": "Logout", "time": "2024-12-06 09:00:00.000"}
+{"id": 4, "user_id": 2, "type": "Logout", "time": "2024-12-06 10:00:00.000"}
+{"id": 5, "user_id": 3, "type": "Marketing Email", "time": "2024-12-06 12:00:00.000"}
+{"id": 5, "user_id": 4, "type": "Marketing Email", "time": "2024-12-06 12:00:00.000"}
+{"id": 5, "user_id": 5, "type": "Marketing Email", "time": "2024-12-06 12:00:00.000"}

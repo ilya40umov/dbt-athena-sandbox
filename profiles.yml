@@ -1,0 +1,14 @@
+dbt_athena_sandbox:
+  #target: "{{ env_var('USERNAME', 'dev') }}"
+  target: 'sandbox'
+  outputs:
+    sandbox:
+      type: athena
+      catalog: awsdatacatalog
+      schema: sandbox
+      s3_staging_dir: s3://sandbox-dbt-staging-abc123/
+      s3_data_dir: s3://sandbox-dbt-data-abc123/
+      region_name: eu-central-1
+      threads: 4
+      num_retries: 1
+      num_boto3_retries: 1

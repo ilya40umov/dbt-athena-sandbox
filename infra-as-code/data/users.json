@@ -2,3 +2,5 @@
 {"id": 2, "name": "Bill", "is_admin": false}
 {"id": 3, "name": "Jane", "is_admin": false}
 {"id": 4, "name": "Jill", "is_admin": true}
+{"id": 5, "name": null, "is_admin": false}
+{"id": 6, "name": "", "is_admin": false}

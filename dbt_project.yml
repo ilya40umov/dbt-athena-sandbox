@@ -1,0 +1,27 @@
+name: 'dbt_athena_sandbox'
+version: '1.0.0'
+
+profile: 'dbt_athena_sandbox'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  dbt_athena_sandbox:
+    src:
+      +materialized: ephemeral
+    foundation:
+      +schema: foundation
+    mart:
+      +schema: mart
+
+flags:
+  send_anonymous_usage_stats: False

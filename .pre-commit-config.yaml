@@ -17,3 +17,10 @@ repos:
     rev: v1.11.2
     hooks:
       - id: mypy
+
+  - repo: https://github.com/tconbeer/sqlfmt
+    rev: v0.18.0
+    hooks:
+      - id: sqlfmt
+        language_version: python
+        additional_dependencies: [ '.[jinjafmt]' ]
