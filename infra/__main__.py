@@ -2,33 +2,32 @@ import pulumi
 import pulumi_aws as aws
 from pulumi_aws.glue import CatalogTableStorageDescriptorColumnArgs as ColumnArgs
 
-if __name__ == "__main__":
-    landing_bucket = aws.s3.BucketV2(
-        "landing-bucket",
-        bucket="sandbox-landing-abc123",
+
+def create_bucket(name: str, expiration_in_days: int = 30) -> aws.s3.BucketV2:
+    bucket = aws.s3.BucketV2(
+        f"{name}-bucket",
+        bucket=f"sandbox-{name}-abc123",
     )
     aws.s3.BucketLifecycleConfigurationV2(
-        "landing-bucket-data-lifecycle",
-        bucket=landing_bucket.id,
+        f"{name}-bucket-data-lifecycle",
+        bucket=bucket.id,
         rules=[
             {
                 "id": "expire-all-data",
                 "status": "Enabled",
                 "expiration": {
-                    "days": 30,
+                    "days": expiration_in_days,
                 },
             }
         ],
     )
-    users_data_object = aws.s3.BucketObject(
-        "users-data-object",
-        key="users/users.json",
-        bucket=landing_bucket.id,
-        source=pulumi.FileAsset("../data/users.json"),
-    )
-    landing_database = aws.glue.CatalogDatabase(
-        "landing-database",
-        name="sandbox_landing",
+    return bucket
+
+
+def create_database(name: str) -> aws.glue.CatalogDatabase:
+    return aws.glue.CatalogDatabase(
+        f"{name}-database",
+        name=f"sandbox_{name}",
         create_table_default_permissions=[
             aws.glue.CatalogDatabaseCreateTableDefaultPermissionArgs(
                 permissions=["ALL"],
@@ -38,7 +37,19 @@ if __name__ == "__main__":
             )
         ],
     )
-    landing_users_table = aws.glue.CatalogTable(
+
+
+def create_landing():
+    landing_bucket = create_bucket(name="landing")
+    landing_database = create_database(name="landing")
+
+    aws.s3.BucketObject(
+        "users-data-object",
+        key="users/users.json",
+        bucket=landing_bucket.id,
+        source=pulumi.FileAsset("../data/users.json"),
+    )
+    aws.glue.CatalogTable(
         "landing-users-table",
         database_name=landing_database.name,
         name="user",
@@ -58,75 +69,23 @@ if __name__ == "__main__":
         ),
     )
 
-    dbt_staging_bucket = aws.s3.BucketV2(
-        "dbt-staging-bucket",
-        bucket="sandbox-dbt-staging-abc123",
-    )
-    aws.s3.BucketLifecycleConfigurationV2(
-        "dbt-staging-bucket-data-lifecycle",
-        bucket=dbt_staging_bucket.id,
-        rules=[
-            {
-                "id": "expire-all-data",
-                "status": "Enabled",
-                "expiration": {
-                    "days": 30,
-                },
-            }
-        ],
-    )
 
-    dbt_data_bucket = aws.s3.BucketV2(
-        "dbt-data-bucket",
-        bucket="sandbox-dbt-data-abc123",
-    )
-    aws.s3.BucketLifecycleConfigurationV2(
-        "dbt-data-bucket-data-lifecycle",
-        bucket=dbt_data_bucket.id,
-        rules=[
-            {
-                "id": "expire-clean-data",
-                "status": "Enabled",
-                "filter": {
-                    "prefix": "clean/",
-                },
-                "expiration": {
-                    "days": 30,
-                },
-            },
-            {
-                "id": "expire-mart-data",
-                "status": "Enabled",
-                "filter": {
-                    "prefix": "mart/",
-                },
-                "expiration": {
-                    "days": 365,
-                },
-            },
-        ],
-    )
-    clean_database = aws.glue.CatalogDatabase(
-        "clean-database",
-        name="sandbox_clean",
-        create_table_default_permissions=[
-            aws.glue.CatalogDatabaseCreateTableDefaultPermissionArgs(
-                permissions=["ALL"],
-                principal=aws.glue.CatalogDatabaseCreateTableDefaultPermissionPrincipalArgs(
-                    data_lake_principal_identifier="IAM_ALLOWED_PRINCIPALS"
-                ),
-            )
-        ],
-    )
-    mart_database = aws.glue.CatalogDatabase(
-        "mart-database",
-        name="sandbox_mart",
-        create_table_default_permissions=[
-            aws.glue.CatalogDatabaseCreateTableDefaultPermissionArgs(
-                permissions=["ALL"],
-                principal=aws.glue.CatalogDatabaseCreateTableDefaultPermissionPrincipalArgs(
-                    data_lake_principal_identifier="IAM_ALLOWED_PRINCIPALS"
-                ),
-            )
-        ],
-    )
+def create_dbt_staging():
+    create_bucket(name="dbt-staging")
+
+
+def create_foundation():
+    create_bucket(name="foundation")
+    create_database(name="foundation")
+
+
+def create_mart():
+    create_bucket(name="mart", expiration_in_days=365)
+    create_database(name="mart")
+
+
+if __name__ == "__main__":
+    create_landing()
+    create_foundation()
+    create_mart()
+    create_dbt_staging()
