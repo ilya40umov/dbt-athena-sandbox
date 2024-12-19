@@ -29,10 +29,10 @@ down: .env
 
 .PHONY: debug run
 
-debug:
+debug: .env
 	source .env && poetry run dbt debug --connection
 
-run:
+run: .env
 	source .env && poetry run dbt run
 
 .PHONY: pre-commit
